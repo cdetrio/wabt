@@ -51,7 +51,7 @@ namespace interp {
 #define CHECK_TRAP(...)            \
   do {                             \
     Result result = (__VA_ARGS__); \
-    if (result != Result::Ok) {    \
+    if (WABT_UNLIKELY(result != Result::Ok)) {    \
       return result;               \
     }                              \
   } while (0)
@@ -499,33 +499,33 @@ HostModule* Environment::AppendHostModule(string_view name) {
   return module;
 }
 
-uint32_t ToRep(bool x) { return x ? 1 : 0; }
-uint32_t ToRep(uint32_t x) { return x; }
-uint64_t ToRep(uint64_t x) { return x; }
-uint32_t ToRep(int32_t x) { return Bitcast<uint32_t>(x); }
-uint64_t ToRep(int64_t x) { return Bitcast<uint64_t>(x); }
-uint32_t ToRep(float x) { return Bitcast<uint32_t>(x); }
-uint64_t ToRep(double x) { return Bitcast<uint64_t>(x); }
-v128     ToRep(v128 x) { return Bitcast<v128>(x); }
+inline uint32_t ToRep(bool x) { return x ? 1 : 0; }
+inline uint32_t ToRep(uint32_t x) { return x; }
+inline uint64_t ToRep(uint64_t x) { return x; }
+inline uint32_t ToRep(int32_t x) { return Bitcast<uint32_t>(x); }
+inline uint64_t ToRep(int64_t x) { return Bitcast<uint64_t>(x); }
+inline uint32_t ToRep(float x) { return Bitcast<uint32_t>(x); }
+inline uint64_t ToRep(double x) { return Bitcast<uint64_t>(x); }
+inline v128     ToRep(v128 x) { return Bitcast<v128>(x); }
 
 template <typename Dst, typename Src>
-Dst FromRep(Src x);
+inline Dst FromRep(Src x);
 
 template <>
-uint32_t FromRep<uint32_t>(uint32_t x) { return x; }
+inline uint32_t FromRep<uint32_t>(uint32_t x) { return x; }
 template <>
-uint64_t FromRep<uint64_t>(uint64_t x) { return x; }
+inline uint64_t FromRep<uint64_t>(uint64_t x) { return x; }
 template <>
-int32_t FromRep<int32_t>(uint32_t x) { return Bitcast<int32_t>(x); }
+inline int32_t FromRep<int32_t>(uint32_t x) { return Bitcast<int32_t>(x); }
 template <>
-int64_t FromRep<int64_t>(uint64_t x) { return Bitcast<int64_t>(x); }
+inline int64_t FromRep<int64_t>(uint64_t x) { return Bitcast<int64_t>(x); }
 template <>
-float FromRep<float>(uint32_t x) { return Bitcast<float>(x); }
+inline float FromRep<float>(uint32_t x) { return Bitcast<float>(x); }
 template <>
-double FromRep<double>(uint64_t x) { return Bitcast<double>(x); }
+inline double FromRep<double>(uint64_t x) { return Bitcast<double>(x); }
 template <>
-v128 FromRep<v128>(v128 x) { return Bitcast<v128>(x); }
-
+inline v128 FromRep<v128>(v128 x) { return Bitcast<v128>(x); }
+ 
 template <typename T>
 struct FloatTraits;
 
@@ -759,65 +759,61 @@ template<> struct WrapMemType<double, double> { typedef uint64_t type; };
 template<> struct WrapMemType<v128, v128> { typedef v128 type; };
 
 template <typename T>
-Value MakeValue(ValueTypeRep<T>);
+inline Value MakeValue(ValueTypeRep<T>);
 
 template <>
-Value MakeValue<uint32_t>(uint32_t v) {
-  Value result;
-  result.i32 = v;
+inline Value MakeValue<uint32_t>(uint32_t v) {
+  Value result { .i32 = v };
   return result;
 }
 
 template <>
-Value MakeValue<int32_t>(uint32_t v) {
-  Value result;
-  result.i32 = v;
+inline Value MakeValue<int32_t>(uint32_t v) {
+  Value result { .i32 = v };
   return result;
 }
 
 template <>
-Value MakeValue<uint64_t>(uint64_t v) {
-  Value result;
-  result.i64 = v;
+inline Value MakeValue<uint64_t>(uint64_t v) {
+  Value result { .i64 = v };
   return result;
 }
 
 template <>
-Value MakeValue<int64_t>(uint64_t v) {
-  Value result;
-  result.i64 = v;
+inline Value MakeValue<int64_t>(uint64_t v) {
+  Value result { .i64 = v };
   return result;
 }
 
 template <>
-Value MakeValue<float>(uint32_t v) {
+inline Value MakeValue<float>(uint32_t v) {
   Value result;
   result.f32_bits = v;
   return result;
 }
 
 template <>
-Value MakeValue<double>(uint64_t v) {
+inline Value MakeValue<double>(uint64_t v) {
   Value result;
   result.f64_bits = v;
   return result;
 }
 
 template <>
-Value MakeValue<v128>(v128 v) {
+inline Value MakeValue<v128>(v128 v) {
   Value result;
   result.v128_bits = v;
   return result;
 }
 
 template <typename T> ValueTypeRep<T> GetValue(Value);
-template<> uint32_t GetValue<int32_t>(Value v) { return v.i32; }
-template<> uint32_t GetValue<uint32_t>(Value v) { return v.i32; }
-template<> uint64_t GetValue<int64_t>(Value v) { return v.i64; }
-template<> uint64_t GetValue<uint64_t>(Value v) { return v.i64; }
-template<> uint32_t GetValue<float>(Value v) { return v.f32_bits; }
-template<> uint64_t GetValue<double>(Value v) { return v.f64_bits; }
-template<> v128 GetValue<v128>(Value v) { return v.v128_bits; }
+template<> inline uint32_t GetValue<int32_t>(Value v) { return v.i32; }
+template<> inline uint32_t GetValue<uint32_t>(Value v) { return v.i32; }
+template<> inline uint64_t GetValue<int64_t>(Value v) { return v.i64; }
+template<> inline uint64_t GetValue<uint64_t>(Value v) { return v.i64; }
+template<> inline uint32_t GetValue<float>(Value v) { return v.f32_bits; }
+template<> inline uint64_t GetValue<double>(Value v) { return v.f64_bits; }
+template<> inline v128 GetValue<v128>(Value v) { return v.v128_bits; }
 
 #define TRAP(type) return Result::Trap##type
 #define TRAP_UNLESS(cond, type) TRAP_IF(!(cond), type)
@@ -875,7 +871,7 @@ Result Thread::GetAtomicAccessAddress(const uint8_t** pc, void** out_address) {
 }
 
 Value& Thread::Top() {
-  return Pick(1);
+  return value_stack_[value_stack_top_ - 1];
 }
 
 Value& Thread::Pick(Index depth) {
