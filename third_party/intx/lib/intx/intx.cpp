@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 
 #include "div.hpp"
-#include <intx/intx.hpp>
+#include "../../include/intx/intx.hpp"
 
 #include <cassert>
 #include <cstring>

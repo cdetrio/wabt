@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <intx/intx.hpp>
+#include "../../include/intx/intx.hpp"
 
 namespace intx
 {

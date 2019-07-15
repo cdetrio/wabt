@@ -266,6 +266,8 @@ add_library(wabt STATIC
   src/interp/interp-trace.cc
 )
 
+target_include_directories(wabt PUBLIC third_party/intx/include)
+
 add_library(intx STATIC
   third_party/intx/lib/intx/div.cpp
 )
@@ -297,6 +299,7 @@ if (NOT EMSCRIPTEN)
     add_executable(${EXE_NAME} ${EXE_SOURCES})
     add_dependencies(everything ${EXE_NAME})
     target_link_libraries(${EXE_NAME} ${EXE_LIBS})
+    target_include_directories(${EXE_NAME} PUBLIC /usr/local/Cellar/google-benchmark/1.5.0/include)
     target_link_libraries(${EXE_NAME} /usr/local/lib/libbenchmark.a)
     set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
     set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
