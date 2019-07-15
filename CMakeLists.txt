@@ -272,6 +272,9 @@ add_library(intx STATIC
   third_party/intx/lib/intx/div.cpp
 )
 
+set (Gperftools_DIR "${CMAKE_CURRENT_LIST_DIR}/cmake/")
+find_package(Gperftools REQUIRED)
+
 if (NOT EMSCRIPTEN)
   if (CODE_COVERAGE)
     add_definitions("-fprofile-arcs -ftest-coverage")
@@ -303,6 +306,7 @@ if (NOT EMSCRIPTEN)
     target_link_libraries(${EXE_NAME} /usr/local/lib/libbenchmark.a)
     set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
     set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
+    target_link_libraries(${EXE_NAME} ${GPERFTOOLS_PROFILER})
 
     if (EXE_INSTALL)
       list(APPEND WABT_EXECUTABLES ${EXE_NAME})
