@@ -243,7 +243,7 @@ WABT_OPCODE(___,  I32,  I32,  I32,  0,  0,    0xe9, EwasmAddModBn, "ewasm_addmod
 WABT_OPCODE(___,  I32,  I32,  I32,  0,  0,    0xea, EwasmSubModBn, "ewasm_submodbn")
 WABT_OPCODE(___,  I32,  I32,  I32,  0,  0,    0xeb, EwasmMulModMontBn, "ewasm_mulmodmontbn")
 WABT_OPCODE(___,  I32,  I32,  I32,  0,  0,    0xec, TwoLocalGet, "ewasm_twolocalget")
-
+WABT_OPCODE(___,  I32,  I32,  I32,  0,  0,    0xed, LocalGetI64Xor, "ewasm_localgeti64xor")
 
 /* Saturating float-to-int opcodes (--enable-saturating-float-to-int) */
 WABT_OPCODE(I32,  F32,  ___,  ___,  0,  0xfc, 0x00, I32TruncSatF32S, "i32.trunc_sat_f32_s")

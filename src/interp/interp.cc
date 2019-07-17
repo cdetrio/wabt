@@ -1756,6 +1756,49 @@ Result Thread::Run(int num_instructions) {
         break;
       }
 
+
+      case Opcode::LocalGetI64Xor: {
+        //printf("doing LocalGetI64Xor!\n");
+        /*
+        case Opcode::I64Xor: {
+          uint32_t top_minus_one = value_stack_top_ - 1;
+          uint32_t top_minus_two = top_minus_one - 1;
+          uint64_t rhs = value_stack_[top_minus_one].i64;
+          uint64_t lhs = value_stack_[top_minus_two].i64;
+          //value_stack_top_ = value_stack_top_ - 2;
+          // we're replacing the top value, so only decrement by one
+          value_stack_top_ = top_minus_one;
+          value_stack_[top_minus_two] = MakeValue<uint64_t>(lhs ^ rhs);
+          //CHECK_TRAP(Binop(IntXor<uint64_t>));
+          break;
+        }
+        */
+        uint32_t depth_1 = ReadU32(&pc);
+        //value_stack_[value_stack_top_] =  value_stack_[value_stack_top_ - depth_1];
+        //printf("got depth_1: %d!\n", depth_1);
+        //printf("value_stack_top_: %d!\n", value_stack_top_);
+
+        uint32_t top_minus_one = value_stack_top_ - 1;
+        uint64_t rhs = value_stack_[value_stack_top_ - depth_1].i64;
+        uint64_t lhs = value_stack_[top_minus_one].i64;
+
+        //printf("got rhs and lhs.\n");
+        value_stack_[top_minus_one] = MakeValue<uint64_t>(lhs ^ rhs);
+        //printf("pushed result..\n");
+        // we're replacing a value that was pushed (LocalGet)
+        // so don't decrement.
+        //value_stack_top_ = value_stack_top_ - 1;
+
+        //printf("set stack height. returning.\n");
+
+        //value_stack_[value_stack_top_+1] =  value_stack_[value_stack_top_ - depth_2];
+        //value_stack_top_ = value_stack_top_ + 2;
+
+
+        break;
+      }
+
+
       case Opcode::LocalSet: {
         Value value = Pop();
         Pick(ReadU32(&pc)) = value;

@@ -177,6 +177,7 @@ class BinaryReaderLogging : public BinaryReaderDelegate {
                     Address offset) override;
   Result OnLocalGetExpr(Index local_index) override;
   Result OnTwoLocalGetExpr(Index local_index, Index local_index_next) override;
+  Result OnLocalGetI64XorExpr(Index local_index) override;
   Result OnLocalSetExpr(Index local_index) override;
   Result OnLocalTeeExpr(Index local_index) override;
   Result OnLoopExpr(Type sig_type) override;

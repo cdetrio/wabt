@@ -185,6 +185,7 @@ class BinaryReaderInterp : public BinaryReaderNop {
                           Address offset) override;
   wabt::Result OnLocalGetExpr(Index local_index) override;
   wabt::Result OnTwoLocalGetExpr(Index local_index, Index local_index_next) override;
+  wabt::Result OnLocalGetI64XorExpr(Index local_index) override;
   wabt::Result OnLocalSetExpr(Index local_index) override;
   wabt::Result OnLocalTeeExpr(Index local_index) override;
   wabt::Result OnLoopExpr(Type sig_type) override;
@@ -1534,6 +1535,33 @@ wabt::Result BinaryReaderInterp::OnTwoLocalGetExpr(Index local_index, Index loca
   CHECK_RESULT(EmitI32(translated_local_index_next));
   return wabt::Result::Ok;
 }
+
+wabt::Result BinaryReaderInterp::OnLocalGetI64XorExpr(Index local_index) {
+  /*
+  wabt::Result BinaryReaderInterp::OnBinaryExpr(wabt::Opcode opcode) {
+    CHECK_RESULT(typechecker_.OnBinary(opcode));
+    CHECK_RESULT(EmitOpcode(opcode));
+    return wabt::Result::Ok;
+  }
+  */
+
+  CHECK_RESULT(CheckLocal(local_index));
+  Type type = GetLocalTypeByIndex(current_func_, local_index);
+  // Get the translated index before calling typechecker_.OnLocalGet because it
+  // will update the type stack size. We need the index to be relative to the
+  // old stack size.
+  Index translated_local_index = TranslateLocalIndex(local_index);
+  CHECK_RESULT(typechecker_.OnLocalGet(type));
+
+  CHECK_RESULT(typechecker_.OnBinary(Opcode::I64Xor));
+
+  CHECK_RESULT(EmitOpcode(Opcode::LocalGetI64Xor));
+
+  CHECK_RESULT(EmitI32(translated_local_index));
+
+  return wabt::Result::Ok;
+}
+
 
 
 wabt::Result BinaryReaderInterp::OnLocalSetExpr(Index local_index) {

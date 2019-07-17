@@ -782,7 +782,21 @@ Result BinaryReader::ReadFunctionBody(Offset end_offset) {
         // Peek at next opcode to check if is another LocalGet
         Opcode opcode_next_peek;
         CHECK_RESULT(PeekOpcode(&opcode_next_peek, "opcode"));
-        if (opcode_next_peek == Opcode::LocalGet) {
+        if (opcode_next_peek == Opcode::I64Xor) {
+          // Opcode::I64Xor code:
+          //CALLBACK(OnBinaryExpr, opcode);
+          //CALLBACK0(OnOpcodeBare);
+
+          CALLBACK(OnOpcodeIndex, local_index);
+          //printf("got LocalGet then I64Xor!\n");
+          Opcode opcode_next;
+          // call ReadOpcode instead of PeekOpcode to advance state_.offset
+          // TODO: just advance state_.offset without reading again?
+          CHECK_RESULT(ReadOpcode(&opcode_next, "opcode"));
+
+          CALLBACK(OnLocalGetI64XorExpr, local_index);
+          CALLBACK0(OnOpcodeBare);
+        } else if (opcode_next_peek == Opcode::LocalGet) {
           //printf("got two LocalGets in a row!\n");
           Opcode opcode_next;
           Index local_index_next;
