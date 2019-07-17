@@ -804,9 +804,25 @@ Result BinaryReader::ReadFunctionBody(Offset end_offset) {
           // TODO: just advance state_.offset without reading again?
           CHECK_RESULT(ReadOpcode(&opcode_next, "opcode"));
           CHECK_RESULT(ReadIndex(&local_index_next, "local.get local index"));
-          CALLBACK(OnTwoLocalGetExpr, local_index, local_index_next);
-          CALLBACK(OnOpcodeIndex, local_index);
-          CALLBACK(OnOpcodeIndex, local_index_next);
+
+          // check if third opcode is an Xor
+          Opcode opcode_three_peek;
+          CHECK_RESULT(PeekOpcode(&opcode_three_peek, "opcode"));
+          if (opcode_three_peek == Opcode::I64Xor) {
+            //printf("triple combo!!\n");
+            Opcode opcode_third;
+            // read ocpcode to advance state_.offset
+            CHECK_RESULT(ReadOpcode(&opcode_third, "opcode"));
+
+            CALLBACK(OnTwoLocalGetI64XorExpr, local_index, local_index_next);
+            CALLBACK(OnOpcodeIndex, local_index);
+            CALLBACK(OnOpcodeIndex, local_index_next);
+          } else {
+            // just two locals
+            CALLBACK(OnTwoLocalGetExpr, local_index, local_index_next);
+            CALLBACK(OnOpcodeIndex, local_index);
+            CALLBACK(OnOpcodeIndex, local_index_next);
+          }
         }  else {
           //printf("one LocalGet.\n");
           CALLBACK(OnLocalGetExpr, local_index);

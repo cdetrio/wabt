@@ -164,6 +164,7 @@ class BinaryReaderIR : public BinaryReaderNop {
                     Address offset) override;
   Result OnLocalGetExpr(Index local_index) override;
   Result OnTwoLocalGetExpr(Index local_index, Index local_index_next) override;
+  Result OnTwoLocalGetI64XorExpr(Index local_index, Index local_index_next) override;
   Result OnLocalGetI64XorExpr(Index local_index) override;
   Result OnLocalSetExpr(Index local_index) override;
   Result OnLocalTeeExpr(Index local_index) override;
@@ -791,6 +792,7 @@ Result BinaryReaderIR::OnLocalGetExpr(Index local_index) {
   return AppendExpr(MakeUnique<LocalGetExpr>(Var(local_index, GetLocation())));
 }
 
+// These are used for wasm2wat, we can ignore.
 Result BinaryReaderIR::OnTwoLocalGetExpr(Index local_index, Index local_index_next) {
   return AppendExpr(MakeUnique<LocalGetExpr>(Var(local_index, GetLocation())));
   //return AppendExpr(MakeUnique<LocalGetExpr>(Var(local_index_next, GetLocation())));
@@ -799,6 +801,11 @@ Result BinaryReaderIR::OnTwoLocalGetExpr(Index local_index, Index local_index_ne
 Result BinaryReaderIR::OnLocalGetI64XorExpr(Index local_index) {
   return AppendExpr(MakeUnique<LocalGetExpr>(Var(local_index, GetLocation())));
   //AppendExpr(MakeUnique<BinaryExpr>(opcode));
+}
+
+Result BinaryReaderIR::OnTwoLocalGetI64XorExpr(Index local_index, Index local_index_next) {
+  return AppendExpr(MakeUnique<LocalGetExpr>(Var(local_index, GetLocation())));
+  //return AppendExpr(MakeUnique<LocalGetExpr>(Var(local_index_next, GetLocation())));
 }
 
 Result BinaryReaderIR::OnI32ConstExpr(uint32_t value) {

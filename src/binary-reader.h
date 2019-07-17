@@ -234,6 +234,7 @@ class BinaryReaderDelegate {
   virtual Result OnLocalGetExpr(Index local_index) = 0;
   virtual Result OnTwoLocalGetExpr(Index local_index, Index local_index_next) = 0;
   virtual Result OnLocalGetI64XorExpr(Index local_index) = 0;
+  virtual Result OnTwoLocalGetI64XorExpr(Index local_index, Index local_index_next) = 0;
   virtual Result OnLocalSetExpr(Index local_index) = 0;
   virtual Result OnLocalTeeExpr(Index local_index) = 0;
   virtual Result OnLoopExpr(Type sig_type) = 0;
