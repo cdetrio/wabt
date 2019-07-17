@@ -1324,6 +1324,7 @@ wabt::Result BinaryReaderInterp::OnCallExpr(Index func_index) {
     //printf("host_func->module_name: %s\n", host_func->module_name.c_str());
     //printf("host_func->field_name: %s\n", host_func->field_name.c_str());
     auto func_name = host_func->field_name;
+    printf("Host function detected: %s\n", func_name.c_str());
 
     //if (func_index == 0) {
     if (func_name == "addmod256") {
@@ -1355,8 +1356,13 @@ wabt::Result BinaryReaderInterp::OnCallExpr(Index func_index) {
       CHECK_RESULT(EmitI32(TranslateFuncIndexToEnv(func_index)));
     }
   } else {
-    CHECK_RESULT(EmitOpcode(Opcode::Call));
-    CHECK_RESULT(EmitFuncOffset(cast<DefinedFunc>(func), func_index));
+    if (func_index == 27) {
+      printf("Memcpy detected!\n");
+      CHECK_RESULT(EmitOpcode(Opcode::Memcpy));
+    } else {
+      CHECK_RESULT(EmitOpcode(Opcode::Call));
+      CHECK_RESULT(EmitFuncOffset(cast<DefinedFunc>(func), func_index));
+    }
   }
 
   return wabt::Result::Ok;

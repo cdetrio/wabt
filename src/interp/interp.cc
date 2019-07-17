@@ -2273,6 +2273,17 @@ Result Thread::Run(int num_instructions) {
         break;
       }
       */
+      
+      case Opcode::Memcpy: {
+         uint32_t len = Pop<uint32_t>();
+         uint32_t src = Pop<uint32_t>();
+         uint32_t dst = Pop<uint32_t>();
+         Memory *mem = &env_->memories_[0];
+         memcpy(&mem->data[dst], &mem->data[src], len);
+         //printf("Memory copy... %x %x %d\n", dst, src, len);
+         CHECK_TRAP(Push<uint32_t>(dst));
+         break;
+      }
 
       case Opcode::EwasmAddMod: {
         uint32_t ret_offset = Pop<uint32_t>();
