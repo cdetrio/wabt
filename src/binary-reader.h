@@ -232,6 +232,7 @@ class BinaryReaderDelegate {
                             uint32_t alignment_log2,
                             Address offset) = 0;
   virtual Result OnLocalGetExpr(Index local_index) = 0;
+  virtual Result OnTwoLocalGetExpr(Index local_index, Index local_index_next) = 0;
   virtual Result OnLocalSetExpr(Index local_index) = 0;
   virtual Result OnLocalTeeExpr(Index local_index) = 0;
   virtual Result OnLoopExpr(Type sig_type) = 0;

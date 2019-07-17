@@ -1728,6 +1728,15 @@ Result Thread::Run(int num_instructions) {
         break;
       }
 
+      case Opcode::TwoLocalGet: {
+        printf("TwoLocalGet!\n");
+        Value value = Pick(ReadU32(&pc));
+        Value value_next = Pick(ReadU32(&pc));
+        CHECK_TRAP(Push(value));
+        CHECK_TRAP(Push(value_next));
+        break;
+      }
+
       case Opcode::LocalSet: {
         Value value = Pop();
         Pick(ReadU32(&pc)) = value;

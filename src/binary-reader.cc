@@ -105,6 +105,15 @@ class BinaryReader {
   Result ReadOffset(Offset* offset, const char* desc) WABT_WARN_UNUSED;
   Result ReadCount(Index* index, const char* desc) WABT_WARN_UNUSED;
 
+
+  Result PeekOpcode(Opcode* out_value, const char* desc) WABT_WARN_UNUSED;
+  template <typename T>
+  Result PeekT(T* out_value,
+               const char* type_name,
+               const char* desc) WABT_WARN_UNUSED;
+  Result PeekU8(uint8_t* out_value, const char* desc) WABT_WARN_UNUSED;
+  Result PeekU32Leb128(uint32_t* out_value, const char* desc) WABT_WARN_UNUSED;
+
   bool IsConcreteType(Type);
   bool IsBlockType(Type);
 
@@ -225,6 +234,52 @@ Result BinaryReader::ReportUnexpectedOpcode(Opcode opcode,
   return Result::Error;
 }
 
+
+Result BinaryReader::PeekOpcode(Opcode* out_value, const char* desc) {
+  uint8_t value = 0;
+  CHECK_RESULT(PeekU8(&value, desc));
+
+  if (Opcode::IsPrefixByte(value)) {
+    uint32_t code;
+    CHECK_RESULT(PeekU32Leb128(&code, desc));
+    *out_value = Opcode::FromCode(value, code);
+  } else {
+    *out_value = Opcode::FromCode(value);
+  }
+  return Result::Ok;
+}
+
+template <typename T>
+Result BinaryReader::PeekT(T* out_value,
+                           const char* type_name,
+                           const char* desc) {
+  if (state_.offset + sizeof(T) > read_end_) {
+    PrintError("unable to read %s: %s", type_name, desc);
+    return Result::Error;
+  }
+  memcpy(out_value, state_.data + state_.offset, sizeof(T));
+  // don't increment offset since we are peeking, not reading
+  //state_.offset += sizeof(T);
+  return Result::Ok;
+}
+
+Result BinaryReader::PeekU8(uint8_t* out_value, const char* desc) {
+  return PeekT(out_value, "uint8_t", desc);
+}
+
+Result BinaryReader::PeekU32Leb128(uint32_t* out_value, const char* desc) {
+  const uint8_t* p = state_.data + state_.offset;
+  const uint8_t* end = state_.data + read_end_;
+  size_t bytes_read = wabt::ReadU32Leb128(p, end, out_value);
+  ERROR_UNLESS(bytes_read > 0, "unable to read u32 leb128: %s", desc);
+  // don't increment offset since we are peeking, not reading
+  // state_.offset += bytes_read;
+  return Result::Ok;
+}
+
+
+
+// _state.offset is incremented here. in ReadU8/ReadT
 Result BinaryReader::ReadOpcode(Opcode* out_value, const char* desc) {
   uint8_t value = 0;
   CHECK_RESULT(ReadU8(&value, desc));
@@ -719,11 +774,31 @@ Result BinaryReader::ReadFunctionBody(Offset end_offset) {
         break;
       }
 
+      // here's where LocalGet is handled.
       case Opcode::LocalGet: {
         Index local_index;
         CHECK_RESULT(ReadIndex(&local_index, "local.get local index"));
-        CALLBACK(OnLocalGetExpr, local_index);
-        CALLBACK(OnOpcodeIndex, local_index);
+
+        // Peek at next opcode to check if is another LocalGet
+        Opcode opcode_next_peek;
+        CHECK_RESULT(PeekOpcode(&opcode_next_peek, "opcode"));
+        if (opcode_next_peek == Opcode::LocalGet) {
+          printf("got two LocalGets in a row!\n");
+          Opcode opcode_next;
+          Index local_index_next;
+          // call ReadOpcode instead of PeekOpcode to advance state_.offset
+          // TODO: just advance state_.offset without reading again?
+          CHECK_RESULT(ReadOpcode(&opcode_next, "opcode"));
+          CHECK_RESULT(ReadIndex(&local_index_next, "local.get local index"));
+          CALLBACK(OnTwoLocalGetExpr, local_index, local_index_next);
+          CALLBACK(OnOpcodeIndex, local_index);
+          CALLBACK(OnOpcodeIndex, local_index_next);
+        }  else {
+          printf("one LocalGet.\n");
+          CALLBACK(OnLocalGetExpr, local_index);
+          CALLBACK(OnOpcodeIndex, local_index);
+        }
+
         break;
       }
 

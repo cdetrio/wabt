@@ -184,6 +184,7 @@ class BinaryReaderInterp : public BinaryReaderNop {
                           uint32_t alignment_log2,
                           Address offset) override;
   wabt::Result OnLocalGetExpr(Index local_index) override;
+  wabt::Result OnTwoLocalGetExpr(Index local_index, Index local_index_next) override;
   wabt::Result OnLocalSetExpr(Index local_index) override;
   wabt::Result OnLocalTeeExpr(Index local_index) override;
   wabt::Result OnLoopExpr(Type sig_type) override;
@@ -1500,6 +1501,9 @@ Index BinaryReaderInterp::TranslateLocalIndex(Index local_index) {
          current_func_->param_and_local_types.size() - local_index;
 }
 
+// LocalGet also handled here.
+// in BinaryReader.cc, it calls OnLocalGetExpr while iterating over function body code
+
 wabt::Result BinaryReaderInterp::OnLocalGetExpr(Index local_index) {
   CHECK_RESULT(CheckLocal(local_index));
   Type type = GetLocalTypeByIndex(current_func_, local_index);
@@ -1512,6 +1516,25 @@ wabt::Result BinaryReaderInterp::OnLocalGetExpr(Index local_index) {
   CHECK_RESULT(EmitI32(translated_local_index));
   return wabt::Result::Ok;
 }
+
+wabt::Result BinaryReaderInterp::OnTwoLocalGetExpr(Index local_index, Index local_index_next) {
+  CHECK_RESULT(CheckLocal(local_index));
+  CHECK_RESULT(CheckLocal(local_index_next));
+  Type type = GetLocalTypeByIndex(current_func_, local_index);
+  Type type_next = GetLocalTypeByIndex(current_func_, local_index_next);
+  // Get the translated index before calling typechecker_.OnLocalGet because it
+  // will update the type stack size. We need the index to be relative to the
+  // old stack size.
+  Index translated_local_index = TranslateLocalIndex(local_index);
+  Index translated_local_index_next = TranslateLocalIndex(local_index_next);
+  CHECK_RESULT(typechecker_.OnLocalGet(type));
+  CHECK_RESULT(typechecker_.OnLocalGet(type_next));
+  CHECK_RESULT(EmitOpcode(Opcode::TwoLocalGet));
+  CHECK_RESULT(EmitI32(translated_local_index));
+  CHECK_RESULT(EmitI32(translated_local_index_next));
+  return wabt::Result::Ok;
+}
+
 
 wabt::Result BinaryReaderInterp::OnLocalSetExpr(Index local_index) {
   CHECK_RESULT(CheckLocal(local_index));

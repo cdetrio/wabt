@@ -176,6 +176,7 @@ class BinaryReaderLogging : public BinaryReaderDelegate {
                     uint32_t alignment_log2,
                     Address offset) override;
   Result OnLocalGetExpr(Index local_index) override;
+  Result OnTwoLocalGetExpr(Index local_index, Index local_index_next) override;
   Result OnLocalSetExpr(Index local_index) override;
   Result OnLocalTeeExpr(Index local_index) override;
   Result OnLoopExpr(Type sig_type) override;
