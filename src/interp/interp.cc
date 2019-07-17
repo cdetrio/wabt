@@ -1729,11 +1729,30 @@ Result Thread::Run(int num_instructions) {
       }
 
       case Opcode::TwoLocalGet: {
-        printf("TwoLocalGet!\n");
+        //printf("TwoLocalGet!\n");
+        /*
         Value value = Pick(ReadU32(&pc));
         Value value_next = Pick(ReadU32(&pc));
         CHECK_TRAP(Push(value));
         CHECK_TRAP(Push(value_next));
+        */
+        /*
+        Value& Thread::Pick(Index depth) {
+          return value_stack_[value_stack_top_ - depth];
+        }
+        Result Thread::Push(Value value) {
+          CHECK_STACK();
+          value_stack_[value_stack_top_++] = value;
+          return Result::Ok;
+        }*/
+
+        uint32_t depth_1 = ReadU32(&pc);
+        uint32_t depth_2 = ReadU32(&pc);
+        value_stack_[value_stack_top_] =  value_stack_[value_stack_top_ - depth_1];
+        value_stack_[value_stack_top_+1] =  value_stack_[value_stack_top_ - depth_2];
+        value_stack_top_ = value_stack_top_ + 2;
+
+
         break;
       }
 
