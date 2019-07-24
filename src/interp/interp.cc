@@ -1638,7 +1638,6 @@ Result Thread::Run(int num_instructions) {
   const uint8_t* pc = &istream[pc_];
   for (int i = 0; i < num_instructions; ++i) {
     Opcode opcode = ReadOpcode(&pc);
-    assert(!opcode.IsInvalid());
     switch (opcode) {
       case Opcode::Select: {
         uint32_t cond = Pop<uint32_t>();
@@ -3913,6 +3912,10 @@ Result Thread::Run(int num_instructions) {
       case Opcode::Rethrow:
       case Opcode::Throw:
       case Opcode::Try:
+        WABT_UNREACHABLE;
+        break;
+
+      default:
         WABT_UNREACHABLE;
         break;
     }
