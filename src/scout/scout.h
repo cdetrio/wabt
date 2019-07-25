@@ -68,17 +68,6 @@ auto blockdata_bytes = std::make_shared<bytes>(from_hex(blockdata_hex));
 //strStream << inFile.rdbuf(); //read the file
 
 
-std::ifstream blockDataFile("./test_block_data.hex");
-//std::stringstream blockDataFileStream << blockDataFile.rdbuf();
-//std::stringstream blockDataFileStream << blockDataFile.rdbuf();
-std::stringstream blockDataFileStream;
-blockDataFileStream << blockDataFile.rdbuf();
-//blockDataFileStream << blockDataFile.rdbuf();
-std::string hexbytes = blockDataFileStream.str(); //str holds the content of the file
-
-cout << "hex bytes length:" << hexbytes.length() << endl;
-blockdata_bytes = from_hex(hexbytes);
-
 
 
 using namespace wabt;
@@ -110,7 +99,7 @@ using namespace wabt::interp;
 
 
 // this blockdata is for the 266-byte benchmark
-unsigned char blockData[] = {0xf9, 0x02, 0x11, 0xa0, 0x42, 0xd5, 0xf0, 0x40, 0x1d, 0x27, 0xbd, 0xae, 0x05, 0x45, 0x2c, 0xe5, 0x2b, 0xce, 0xe4, 0x2a, 0x2c, 0x65, 0x9c, 0x11, 0x2d, 0x15, 0xb5, 0xf3, 0x0b, 0x12, 0x6b, 0x9e, 0xc2, 0x4c, 0x68, 0xc0, 0xa0, 0x45, 0x45, 0x4c, 0xcb, 0x94, 0xe6, 0x2e, 0xfd, 0xbc, 0xd0, 0x84, 0x23, 0xb7, 0xee, 0xf4, 0xca, 0xc4, 0x36, 0x14, 0x02, 0x50, 0x10, 0xc4, 0x31, 0x2a, 0x74, 0x5f, 0x67, 0x40, 0x15, 0x88, 0xa5, 0xa0, 0x2a, 0xfb, 0x19, 0x06, 0x9a, 0x24, 0x7c, 0x89, 0x76, 0x1e, 0x8e, 0xef, 0x70, 0x06, 0x49, 0xc9, 0x57, 0x43, 0xf1, 0x65, 0x1e, 0x83, 0x7c, 0x26, 0xaa, 0xb6, 0x88, 0x02, 0x28, 0xbe, 0xdb, 0xf3, 0xa0, 0x30, 0x5d, 0xd5, 0x53, 0x90, 0xd2, 0xba, 0xea, 0x91, 0x57, 0xb4, 0xb1, 0x84, 0x1b, 0xf1, 0x35, 0x6b, 0x11, 0x87, 0x31, 0x0b, 0xac, 0xc5, 0xeb, 0x84, 0x8c, 0x34, 0xce, 0x13, 0x91, 0x87, 0x5a, 0xa0, 0xb5, 0x3a, 0x79, 0xd6, 0x7e, 0xe7, 0x72, 0xcf, 0xdc, 0x8d, 0xf0, 0x34, 0x02, 0xe1, 0x40, 0x0e, 0x7f, 0xf4, 0xdf, 0x4e, 0x97, 0x42, 0x3a, 0x62, 0x96, 0xc2, 0xb7, 0x1a, 0x76, 0x49, 0xaf, 0x1c, 0xa0, 0xdf, 0xaf, 0xfe, 0xf7, 0x7c, 0x95, 0xe5, 0x19, 0xbd, 0x9f, 0x2e, 0xf4, 0x64, 0xc6, 0x95, 0x45, 0xb5, 0x08, 0x51, 0x06, 0xd7, 0x67, 0xed, 0x1d, 0xfc, 0xb2, 0xfe, 0xf1, 0x2d, 0x3f, 0x94, 0xf5, 0xa0, 0xa8, 0x98, 0xad, 0x01, 0xe2, 0x72, 0xc3, 0x50, 0xdd, 0x4a, 0x79, 0x54, 0xbd, 0x3e, 0xda, 0x10, 0x83, 0x7e, 0xe7, 0x9d, 0xe6, 0xd7, 0xa9, 0x92, 0x45, 0xa3, 0xb5, 0xd6, 0x38, 0xad, 0x51, 0xae, 0xa0, 0xd5, 0x47, 0x68, 0x78, 0xfd, 0x37, 0xd0, 0x82, 0xf4, 0x70, 0x84, 0x40, 0x45, 0x92, 0xdc, 0x5f, 0xe1, 0xf8, 0x89, 0x11, 0xe2, 0x57, 0x09, 0x86, 0x2f, 0x07, 0x87, 0x12, 0x80, 0x6f, 0x0c};
+//unsigned char blockData[] = {0xf9, 0x02, 0x11, 0xa0, 0x42, 0xd5, 0xf0, 0x40, 0x1d, 0x27, 0xbd, 0xae, 0x05, 0x45, 0x2c, 0xe5, 0x2b, 0xce, 0xe4, 0x2a, 0x2c, 0x65, 0x9c, 0x11, 0x2d, 0x15, 0xb5, 0xf3, 0x0b, 0x12, 0x6b, 0x9e, 0xc2, 0x4c, 0x68, 0xc0, 0xa0, 0x45, 0x45, 0x4c, 0xcb, 0x94, 0xe6, 0x2e, 0xfd, 0xbc, 0xd0, 0x84, 0x23, 0xb7, 0xee, 0xf4, 0xca, 0xc4, 0x36, 0x14, 0x02, 0x50, 0x10, 0xc4, 0x31, 0x2a, 0x74, 0x5f, 0x67, 0x40, 0x15, 0x88, 0xa5, 0xa0, 0x2a, 0xfb, 0x19, 0x06, 0x9a, 0x24, 0x7c, 0x89, 0x76, 0x1e, 0x8e, 0xef, 0x70, 0x06, 0x49, 0xc9, 0x57, 0x43, 0xf1, 0x65, 0x1e, 0x83, 0x7c, 0x26, 0xaa, 0xb6, 0x88, 0x02, 0x28, 0xbe, 0xdb, 0xf3, 0xa0, 0x30, 0x5d, 0xd5, 0x53, 0x90, 0xd2, 0xba, 0xea, 0x91, 0x57, 0xb4, 0xb1, 0x84, 0x1b, 0xf1, 0x35, 0x6b, 0x11, 0x87, 0x31, 0x0b, 0xac, 0xc5, 0xeb, 0x84, 0x8c, 0x34, 0xce, 0x13, 0x91, 0x87, 0x5a, 0xa0, 0xb5, 0x3a, 0x79, 0xd6, 0x7e, 0xe7, 0x72, 0xcf, 0xdc, 0x8d, 0xf0, 0x34, 0x02, 0xe1, 0x40, 0x0e, 0x7f, 0xf4, 0xdf, 0x4e, 0x97, 0x42, 0x3a, 0x62, 0x96, 0xc2, 0xb7, 0x1a, 0x76, 0x49, 0xaf, 0x1c, 0xa0, 0xdf, 0xaf, 0xfe, 0xf7, 0x7c, 0x95, 0xe5, 0x19, 0xbd, 0x9f, 0x2e, 0xf4, 0x64, 0xc6, 0x95, 0x45, 0xb5, 0x08, 0x51, 0x06, 0xd7, 0x67, 0xed, 0x1d, 0xfc, 0xb2, 0xfe, 0xf1, 0x2d, 0x3f, 0x94, 0xf5, 0xa0, 0xa8, 0x98, 0xad, 0x01, 0xe2, 0x72, 0xc3, 0x50, 0xdd, 0x4a, 0x79, 0x54, 0xbd, 0x3e, 0xda, 0x10, 0x83, 0x7e, 0xe7, 0x9d, 0xe6, 0xd7, 0xa9, 0x92, 0x45, 0xa3, 0xb5, 0xd6, 0x38, 0xad, 0x51, 0xae, 0xa0, 0xd5, 0x47, 0x68, 0x78, 0xfd, 0x37, 0xd0, 0x82, 0xf4, 0x70, 0x84, 0x40, 0x45, 0x92, 0xdc, 0x5f, 0xe1, 0xf8, 0x89, 0x11, 0xe2, 0x57, 0x09, 0x86, 0x2f, 0x07, 0x87, 0x12, 0x80, 0x6f, 0x0c};
 
 
 /*
@@ -134,6 +123,90 @@ unsigned char blockData[] = {0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0
 
 void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* host_module_env) {
 
+
+  /*
+  std::ifstream blockDataFile("./test_block_data.hex");
+  std::stringstream blockDataFileStream;
+  blockDataFileStream << blockDataFile.rdbuf();
+  std::string hexbytes = blockDataFileStream.str(); //str holds the content of the file
+
+  std::cout << "hex bytes length:" << hexbytes.length() << std::endl;
+  auto blockdata_bytes = from_hex(hexbytes);
+  */
+
+  //auto base_name = path.stem().string();
+
+  std::ifstream blockDataFile{"./test_block_data.hex"};
+  std::string blockdata_hex{std::istreambuf_iterator<char>{blockDataFile}, std::istreambuf_iterator<char>{}};
+
+  blockdata_hex.erase(
+      std::remove_if(blockdata_hex.begin(), blockdata_hex.end(), [](char x) { return std::isspace(x); }),
+      blockdata_hex.end());
+
+  //auto code = std::make_shared<bytes>(from_hex(code_hex));
+
+  //std::cout << "blockdata_hex length:" << blockdata_hex.length() << std::endl;
+
+  //auto blockdata_bytes = std::make_shared<bytes>(from_hex(blockdata_hex));
+
+  /*
+  // from_hex returns a basic_string_view
+  auto blockdata_bytes = from_hex(blockdata_hex);
+  std::cout << "blockdata bytes length:" << blockdata_bytes.length() << std::endl;
+
+  unsigned char blockData[blockdata_bytes.size() + 1];
+  blockData[blockdata_bytes.size()] = '\0';
+  */
+
+
+  // bytes is a basic_string
+  auto blockdata_bytes = std::make_shared<bytes>(from_hex(blockdata_hex));
+  std::cout << "blockdata bytes length:" << blockdata_bytes->size() << std::endl;
+
+  const unsigned char* blockData = blockdata_bytes->data();
+  //blockData = blockdata_bytes.data();
+
+  // std::copy(blockdata_bytes.begin(), blockdata_bytes.end(), blockData);
+
+  // std::string(str).c_str()
+  
+  //std::string(blockdata_bytes).c_str()
+  //std::strcpy(blockData, std::string(blockdata_bytes.data()).c_str());
+
+  //unsigned char blockData[]
+  //unsigned char blockData[] = *blockdata_bytes;
+  //unsigned char blockData[blockdata_bytes.size() + 1];
+  //unsigned char blockData[blockdata_bytes->size()]; 
+
+
+  //std::copy(blockdata_bytes.begin(), blockdata_bytes.end(), blockData); 
+  //std::strcpy(tab2.get(), temp.c_str());
+
+  //blockdata_bytes->copy(blockData, blockdata_bytes->size()+1);
+
+  //*blockData = &(blockdata_bytes->c_str());
+  //unsigned char* blockData = blockdata_bytes->c_str();
+  //const unsigned char *blockData = blockdata_bytes.c_str();
+
+  int block_data_size = std::strlen((char*)blockData);
+  printf("done printing.. %d\n", block_data_size);
+
+  std::cout << "blockData[] length:" << block_data_size << std::endl;
+  //printf("blockData: %s\n", blockData);
+
+  // 0x7ffeefbfee98
+  //std::cout << std::hex << &blockData << std::endl;
+
+  //std::cout << std::hex << blockData << std::endl;
+  //for(int i=0; i < std::strlen((char*)blockData); ++i)
+  for(int i=0; i < block_data_size; ++i)
+    std::cout << std::hex << (int)blockData[i];
+
+  std::cout << std::endl;
+
+  printf("done printing..\n");
+
+
   host_module_env->AppendFuncExport(
     "eth2_loadPreStateRoot",
     {{Type::I32}, {}},
@@ -143,6 +216,7 @@ void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* 
       const interp::TypedValues& args,
       interp::TypedValues& results
     ) {
+      // TODO: use env to load prestate root
       //printf("eth2_loadPreStateRoot mem_pos: %llu\n", args[0].value.i32);
       return interp::Result::Ok;
     }
@@ -184,7 +258,7 @@ void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* 
       for(int j = 0; j < 16; j++)
         sprintf(&buffer[2*j], "%02X", postStateData[j]);
 
-      //std::cout << "eth2_savePostStateRoot: " << std::hex << buffer << std::endl;
+      std::cout << "eth2_savePostStateRoot: " << std::hex << buffer << std::endl;
 
 
       return interp::Result::Ok;
@@ -195,15 +269,56 @@ void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* 
   host_module_env->AppendFuncExport(
     "eth2_blockDataSize",
     {{}, {Type::I32}},
-    [](
+    [blockdata_bytes](
       const interp::HostFunc*,
       const interp::FuncSignature*,
       const interp::TypedValues& args,
       interp::TypedValues& results
     ) {
-      //printf("eth2_blockDataSize\n");
+      printf("eth2_blockDataSize\n");
 
-      results[0].set_i32(sizeof(blockData));
+      //results[0].set_i32(sizeof(blockData));
+      //int data_size = std::strlen((char*)*blockData);
+      
+      /* using plain [blockData]
+      // data_size = 8
+      //int data_size = std::strlen((char*)(blockData));
+
+      // data_size = 3
+      //int data_size = std::strlen((char*)(&blockData));
+
+      // segfault
+      //int data_size = std::strlen((char*)(*blockData));
+      */
+
+      // segfault
+      //int data_size = std::strlen((char*)(blockData[0]));
+
+     // int data_size = std::strlen((char*)(blockData[0]));
+
+
+      /* using [&blockData] */
+      // segfault
+      //int data_size = std::strlen((char*)(blockData));
+
+      // segfault
+      //int data_size = std::strlen((char*)(*blockData));
+
+      // segfault
+      //int data_size = std::strlen((char*)(blockData[0]));
+
+
+      /* using [&blockData[0]] */
+
+      //int data_size = std::strlen((char*)(blockData));
+
+      int data_size = blockdata_bytes->size();
+
+      printf("eth2_blockDataSize: %d\n", data_size);
+
+      results[0].set_i32(data_size);
+
+      printf("returned eth2_blockDataSize\n");
 
       return interp::Result::Ok;
     }
@@ -214,13 +329,13 @@ void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* 
   host_module_env->AppendFuncExport(
     "eth2_blockDataCopy",
     {{Type::I32, Type::I32, Type::I32}, {}},
-    [env](
+    [env, blockData](
       const interp::HostFunc*,
       const interp::FuncSignature*,
       const interp::TypedValues& args,
       interp::TypedValues&
     ) {
-      //printf("eth2_blockDataCopy.\n");
+      printf("eth2_blockDataCopy.\n");
 
       // eth2_blockDataCopy(outOffset, srcOffset, length) {
       //wabt::interp::Memory* mem = &env->memories_[0];
@@ -237,9 +352,9 @@ void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* 
       // TODO: out_offset is incrementing by 266 on every call, which is very weird.
       // should be the same on every call (it is on Scout)
 
-      //printf("eth2_blockDataCopy out_offset: %llu\n", args[0].value.i32);
-      //printf("eth2_blockDataCopy src_offset: %llu\n", args[1].value.i32);
-      //printf("eth2_blockDataCopy copy_len: %llu\n", args[2].value.i32);
+      printf("eth2_blockDataCopy out_offset: %d\n", args[0].value.i32);
+      printf("eth2_blockDataCopy src_offset: %d\n", args[1].value.i32);
+      printf("eth2_blockDataCopy copy_len: %d\n", args[2].value.i32);
 
       //char myArray[] = {0x00, 0x01, 0x02};
 
@@ -261,14 +376,18 @@ void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* 
       //std::cout << "eth2_blockDataCopy writing this to mem: " << std::hex << buffer << std::endl;
       */
 
+
+      std::cout << "eth2_blockDataCopy writing to mem..." << std::endl;
+
       //mem->data[out_offset] = static_cast<char>(*dataToCopy);
       //mem->data[out_offset] = static_cast<unsigned char>(*dataToCopy);
       //mem->data[out_offset] = reinterpret_cast<uint8_t*>(dataToCopy);
 
       std::copy(blockData+src_offset, blockData+copy_len, &mem->data[out_offset]);
 
+      std::cout << "eth2_blockDataCopy wrote to mem." << std::endl;
 
-      /*
+
       // inspect written memory
       unsigned char writtenToMem[32];
       uint8_t* mem_ptr = reinterpret_cast<uint8_t*>(&mem->data[out_offset]);
@@ -282,7 +401,7 @@ void AppendScoutFuncs(wabt::interp::Environment* env, wabt::interp::HostModule* 
         sprintf(&bufferWrittenMem[2*j], "%02X", writtenToMem[j]);
 
       std::cout << "eth2_blockDataCopy memory after writing:" << std::hex << bufferWrittenMem << std::endl;
-      */
+
 
 
 
