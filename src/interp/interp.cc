@@ -2559,7 +2559,7 @@ Result Thread::Run(int num_instructions) {
       }
 
 
-      /*
+
       case Opcode::EwasmF1mToMont: {
         uint32_t ret_offset = Pop<uint32_t>();
         uint32_t a_offset = Pop<uint32_t>();
@@ -2577,7 +2577,7 @@ Result Thread::Run(int num_instructions) {
 
         break;
       }
-      */
+
 
 
       /**** Frm bignum funcs. These replicate websnark's Frm_* functions (`m` stands for montgomery, `r` refers to using the order of the curve group as the modulus rather than the base field) ****/
